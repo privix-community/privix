@@ -50,6 +50,13 @@ npm run tauri build
 2. 配置至少一个 AI Provider(推荐 DeepSeek / Kimi / Moonshot / 通义)
 3. 完成后进入 `/overview` 工作台
 
+## 文档
+
+- [用户手册](./docs/USER_GUIDE.md) — 安装、首次启动、Provider 配置、故障排查、FAQ
+- [上游同步策略](./UPSTREAM.md)
+- [贡献指南](./CONTRIBUTING.md)
+- [安全策略](./SECURITY.md)
+
 ## 许可证
 
 - **本项目整体**:[Apache License 2.0](./LICENSE)
