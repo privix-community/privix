@@ -10,18 +10,15 @@ import {
 } from '../lib/workspace-manager.js'
 import { showModal, showConfirm } from './modal.js'
 import { toast } from './toast.js'
-
-function escHtml(s) {
-  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
+import { escapeHtml } from '../lib/escape.js'
 
 export function renderWorkspaceSwitcher() {
   const current = getCurrentWorkspace()
   return `
     <div class="workspace-switcher" id="workspace-switcher">
-      <button type="button" class="workspace-current" id="btn-workspace-toggle" title="${escHtml(current.name)}">
+      <button type="button" class="workspace-current" id="btn-workspace-toggle" title="${escapeHtml(current.name)}">
         <span class="workspace-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
-        <span class="workspace-label">${escHtml(current.name)}</span>
+        <span class="workspace-label">${escapeHtml(current.name)}</span>
         <svg class="workspace-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="workspace-dropdown" id="workspace-dropdown" hidden></div>
@@ -34,8 +31,8 @@ function renderDropdownMenu() {
   const current = getCurrentWorkspace()
   const items = list.map(ws => {
     const active = ws.id === current.id ? ' workspace-item-active' : ''
-    return `<button type="button" class="workspace-item${active}" data-workspace-id="${escHtml(ws.id)}">
-      <span class="workspace-item-name">${escHtml(ws.name)}</span>
+    return `<button type="button" class="workspace-item${active}" data-workspace-id="${escapeHtml(ws.id)}">
+      <span class="workspace-item-name">${escapeHtml(ws.name)}</span>
       ${ws.id === current.id ? '<span class="workspace-item-check" aria-hidden="true">✓</span>' : ''}
     </button>`
   }).join('')
@@ -68,11 +65,16 @@ function openDropdown(dropdown) {
   dropdown.classList.add('workspace-dropdown-open')
 }
 
+// sidebar 每次 renderSidebar 都会重新调用 bindWorkspaceSwitcher,
+// 这里模块级保留上一次的 document-click 清理器,调用前先拆旧的,避免 listener 累积。
+let _prevOutsideCleanup = null
+
 /**
  * 绑定 switcher 事件。必须在 sidebar 渲染后调用一次。
  * 提供 onSwitched 回调用于切换后重渲染 / reload。
  */
 export function bindWorkspaceSwitcher(sidebarEl, { onSwitched } = {}) {
+  if (_prevOutsideCleanup) { _prevOutsideCleanup(); _prevOutsideCleanup = null }
   const toggleBtn = sidebarEl.querySelector('#btn-workspace-toggle')
   const dropdown = sidebarEl.querySelector('#workspace-dropdown')
   if (!toggleBtn || !dropdown) return
@@ -148,7 +150,7 @@ export function bindWorkspaceSwitcher(sidebarEl, { onSwitched } = {}) {
     else if (!e.target.closest('#workspace-switcher')) closeDropdown(dropdown)
   }
   document.addEventListener('click', outsideClose)
-
-  // 返回清理函数(给 cleanup 用)
-  return () => document.removeEventListener('click', outsideClose)
+  const cleanup = () => document.removeEventListener('click', outsideClose)
+  _prevOutsideCleanup = cleanup
+  return cleanup
 }

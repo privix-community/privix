@@ -32,16 +32,18 @@ const _listeners = new Set()
 // monkey-patch 前保存的原生方法引用 — install 后由 installWorkspaceStorage 覆写
 let _rawStorage = null
 let _patched = false
-let rawGet = (key) => (_rawStorage ? _rawStorage.getItem(key) : null)
 let rawSet = (key, value) => (_rawStorage ? _rawStorage.setItem(key, value) : undefined)
 let rawRemove = (key) => (_rawStorage ? _rawStorage.removeItem(key) : undefined)
+
+// 缓存活跃 workspace ID。transformKey 在 localStorage 每次 get/set/remove 时调用,
+// 直接读底层 ACTIVE_KEY 等于每次 2x 读。改为进程内变量,switch 时同步更新。
+let _cachedActiveWorkspaceId = DEFAULT_WORKSPACE_ID
 
 /**
  * 获取当前活跃 workspace ID。未设置则回退到 'default'。
  */
 export function getActiveWorkspaceId() {
-  if (!_rawStorage) return DEFAULT_WORKSPACE_ID
-  return rawGet(ACTIVE_KEY) || DEFAULT_WORKSPACE_ID
+  return _cachedActiveWorkspaceId
 }
 
 /**
@@ -50,6 +52,7 @@ export function getActiveWorkspaceId() {
  */
 export function setActiveWorkspaceId(id) {
   const wsId = id || DEFAULT_WORKSPACE_ID
+  _cachedActiveWorkspaceId = wsId
   rawSet(ACTIVE_KEY, wsId)
   for (const fn of _listeners) { try { fn(wsId) } catch { /* noop */ } }
 }
@@ -61,9 +64,8 @@ export function onWorkspaceChange(fn) {
 
 function transformKey(key) {
   if (GLOBAL_KEYS.has(key)) return key
-  const wsId = getActiveWorkspaceId()
-  if (wsId === DEFAULT_WORKSPACE_ID) return key
-  return `${NAMESPACE_PREFIX}${wsId}.${key}`
+  if (_cachedActiveWorkspaceId === DEFAULT_WORKSPACE_ID) return key
+  return `${NAMESPACE_PREFIX}${_cachedActiveWorkspaceId}.${key}`
 }
 
 /**
@@ -82,9 +84,10 @@ export function installWorkspaceStorage() {
   target.getItem = (k) => orig.getItem(transformKey(k))
   target.setItem = (k, v) => orig.setItem(transformKey(k), v)
   target.removeItem = (k) => orig.removeItem(transformKey(k))
-  rawGet = orig.getItem
   rawSet = orig.setItem
   rawRemove = orig.removeItem
+  // install 后,从持久化中恢复上次选择的 workspace(兼容重启/刷新)
+  _cachedActiveWorkspaceId = orig.getItem(ACTIVE_KEY) || DEFAULT_WORKSPACE_ID
   _patched = true
 }
 

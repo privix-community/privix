@@ -11,6 +11,8 @@
  */
 
 import { t } from './i18n.js'
+import { escapeHtml } from './escape.js'
+import { showConfirm } from '../components/modal.js'
 
 const STORAGE_KEY = 'privix-community-sensitive-detect'
 const DEFAULT_TYPES = [
@@ -59,7 +61,7 @@ const DETECTORS = [
   { type: 'pem_private', regex: /-----BEGIN [A-Z ]*PRIVATE KEY-----/g },
   { type: 'cn_id_card', regex: /\b[1-9]\d{5}(?:18|19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{3}[\dXx]\b/g, validate: validateCnIdCard },
   { type: 'cn_mobile', regex: /(?<!\d)1[3-9]\d{9}(?!\d)/g },
-  { type: 'credit_card', regex: /\b(?:\d[ -]?){13,19}\b/g, validate: validateLuhn },
+  { type: 'credit_card', regex: /\b\d{13,19}\b/g, validate: validateLuhn },
 ]
 
 export function detectSensitive(text, { enabledTypes = DEFAULT_TYPES } = {}) {
@@ -133,10 +135,6 @@ export function listSensitiveTypes() {
 
 // ── 模态 ──
 
-function escapeHtml(s) {
-  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
-
 function maskPreview(s) {
   const str = String(s)
   if (str.length <= 8) return str.slice(0, 2) + '***'
@@ -185,7 +183,6 @@ async function showSensitiveWarningModal(text, hits) {
     overlay.querySelector('[data-action="strip"]').onclick = () => close({ action: 'strip', text: stripLinesWithHits(text, hits) })
     overlay.querySelector('[data-action="mask"]').onclick = () => close({ action: 'mask', text: redactText(text, hits) })
     overlay.querySelector('[data-action="send"]').onclick = async () => {
-      const { showConfirm } = await import('../components/modal.js')
       const ok = await showConfirm(t('sensitive.confirm_send', { count: hits.length }))
       if (ok) close({ action: 'send', text })
     }
