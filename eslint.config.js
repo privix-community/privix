@@ -34,6 +34,8 @@ export default [
         console: 'readonly',
         URL: 'readonly',
         URLSearchParams: 'readonly',
+        btoa: 'readonly',
+        atob: 'readonly',
         AbortController: 'readonly',
         AbortSignal: 'readonly',
         Request: 'readonly',

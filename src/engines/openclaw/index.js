@@ -62,6 +62,7 @@ export default {
       { path: '/plugin-hub', loader: () => import('../../pages/plugin-hub.js') },
       { path: '/route-map', loader: () => import('../../pages/route-map.js') },
       { path: '/diagnose', loader: () => import('../../pages/diagnose.js') },
+      { path: '/research', loader: () => import('../../pages/evoscientist.js') },
     ]
   },
 

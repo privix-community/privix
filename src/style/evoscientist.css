@@ -1,0 +1,1820 @@
+/* ========================================
+   Prospect-Research 页面样式
+   从 evoscientist.js injectStyles() 提取
+   ======================================== */
+
+/* ── 布局 ── */
+.evosci-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+.evosci-pane[hidden] {
+  display: none !important;
+}
+.evosci-main-grid {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+.evosci-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  min-width: 0;
+}
+
+/* ── 状态条（顶部） ── */
+.evosci-status-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: 10px 18px;
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-secondary);
+  flex-wrap: wrap;
+  transition: background var(--transition-normal), border-color var(--transition-normal);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+/* Phase 2a: 状态条随状态变色 */
+.evosci-status-strip.state-ready {
+  background: linear-gradient(135deg, var(--success-bg) 0%, transparent 50%), var(--bg-card);
+  border-color: color-mix(in srgb, var(--success) 20%, transparent);
+}
+.evosci-status-strip.state-needs_config {
+  background: linear-gradient(135deg, var(--warning-bg) 0%, transparent 50%), var(--bg-card);
+  border-color: color-mix(in srgb, var(--warning) 20%, transparent);
+}
+.evosci-status-strip.state-not_installed {
+  background: linear-gradient(135deg, var(--error-bg) 0%, transparent 50%), var(--bg-card);
+  border-color: color-mix(in srgb, var(--error) 20%, transparent);
+}
+.evosci-status-strip.state-stopped {
+  background: var(--bg-card);
+}
+.evosci-status-strip.state-starting {
+  background: linear-gradient(135deg, var(--info-muted) 0%, transparent 50%), var(--bg-card);
+  border-color: color-mix(in srgb, var(--accent) 20%, transparent);
+  background-size: 200% 100%;
+  animation: evosci-status-shimmer 2s ease-in-out infinite;
+}
+@keyframes evosci-status-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.evosci-status-strip-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.evosci-status-strip-info {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-micro);
+  letter-spacing: var(--tracking-micro);
+}
+.evosci-status-strip-info.warn {
+  color: var(--warning);
+}
+.evosci-status-strip-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ── Runbar（说明区） ── */
+.evosci-runbar {
+  border-radius: var(--radius-xl);
+  padding: 18px;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+}
+.evosci-runbar-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  align-items: flex-start;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.evosci-runbar-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tile);
+  line-height: var(--leading-card);
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.evosci-runbar-copy {
+  font-size: var(--font-size-md);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-caption);
+  color: var(--text-secondary);
+  max-width: 820px;
+}
+.evosci-runbar-tools {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ── 图标按钮 ── */
+.evosci-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-primary);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-normal), background var(--transition-normal), border-color var(--transition-normal);
+}
+.evosci-icon-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+  border-color: var(--accent);
+}
+.evosci-icon-btn:active {
+  background: var(--bg-tertiary);
+}
+.evosci-icon-btn.attention {
+  border-color: color-mix(in srgb, var(--warning) 42%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--warning) 14%, transparent);
+  animation: evosci-attention-pulse 2s ease-in-out infinite;
+}
+@keyframes evosci-attention-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--warning) 14%, transparent); }
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--warning) 8%, transparent); }
+}
+
+/* ── 状态行/状态芯片 ── */
+.evosci-status-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: 14px;
+}
+.evosci-status-chip {
+  padding: var(--space-md) 14px;
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+}
+.evosci-status-chip-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-nano);
+  margin-bottom: 6px;
+}
+.evosci-status-chip-value {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  letter-spacing: var(--tracking-body);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.evosci-status-chip-meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-micro);
+  word-break: break-word;
+}
+
+/* ── 内联状态标签 ── */
+.evosci-inline-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+.evosci-inline-status.ok {
+  color: var(--success);
+  background: var(--success-bg);
+}
+.evosci-inline-status.warn {
+  color: var(--warning);
+  background: var(--warning-bg);
+}
+.evosci-inline-status.danger {
+  color: var(--error);
+  background: var(--error-bg);
+}
+
+/* ── 通用 ── */
+.evosci-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.evosci-surface {
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-secondary);
+  transition: box-shadow var(--transition-normal), border-color var(--transition-normal), transform var(--transition-normal);
+}
+.evosci-surface:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-primary);
+  transform: translateY(-1px);
+}
+.evosci-surface-hero {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+  border-top: 3px solid var(--accent);
+}
+.evosci-surface-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  letter-spacing: var(--tracking-body);
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  padding-inline-start: 12px;
+  border-inline-start: 3px solid var(--accent);
+}
+.evosci-surface-copy {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-caption);
+  margin-bottom: var(--space-md);
+}
+.evosci-workbench-hero {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: var(--leading-tile);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tile);
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+/* ── Session 侧边栏 ── */
+.evosci-session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 680px;
+  overflow: auto;
+}
+.evosci-session-card {
+  width: 100%;
+  text-align: start;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--space-md) 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition-normal);
+}
+.evosci-session-card:hover {
+  background: var(--bg-card-hover);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-primary);
+  transform: translateY(-1px);
+}
+.evosci-session-card.active {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, var(--accent-subtle), var(--bg-secondary));
+  box-shadow: 0 0 0 2px var(--accent-muted);
+}
+.evosci-session-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+/* Phase 4b: Session badge */
+.evosci-session-badge {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.evosci-session-preview {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-micro);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── 聊天外壳 ── */
+.evosci-chat-shell {
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  overflow: hidden;
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-secondary);
+  position: relative;
+}
+/* Phase 2c: 运行进度条 */
+.evosci-chat-shell.running::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background-size: 200% 100%;
+  animation: evosci-progress-slide 1.5s ease-in-out infinite;
+  z-index: 10;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: 0 2px 16px var(--accent-muted);
+}
+@keyframes evosci-progress-slide {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.evosci-chat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+  flex-wrap: wrap;
+}
+.evosci-note-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--info-muted);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--leading-micro);
+}
+
+/* ── 时间线 ── */
+.evosci-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 18px 18px 42px;
+  min-height: 360px;
+  max-height: 720px;
+  overflow: auto;
+  background: var(--bg-card);
+  flex: 1;
+  scroll-behavior: smooth;
+  position: relative;
+  mask-image: linear-gradient(to bottom, transparent, black 18px, black calc(100% - 18px), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 18px, black calc(100% - 18px), transparent);
+}
+/* Phase 3a: 时间线竖线连接器 */
+.evosci-timeline::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 22px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--border-secondary) 5%, var(--border-secondary) 95%, transparent);
+  border-radius: 1px;
+  pointer-events: none;
+}
+.evosci-timeline::-webkit-scrollbar {
+  width: 6px;
+}
+.evosci-timeline::-webkit-scrollbar-track {
+  background: transparent;
+}
+.evosci-timeline::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,0.25);
+  border-radius: 3px;
+}
+.evosci-timeline::-webkit-scrollbar-thumb:hover {
+  background: rgba(148,163,184,0.4);
+}
+
+/* ── 时间线条目 ── */
+.evosci-entry {
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  /* 默认无入场动画（增量渲染时旧条目不闪烁） */
+  position: relative;
+}
+/* Phase 3a: 时间线节点圆点 */
+.evosci-entry::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -28px;
+  top: 18px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-primary);
+  border: 2px solid var(--bg-card);
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--border-secondary);
+}
+@keyframes evosci-slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.evosci-entry.evosci-new {
+  animation: evosci-slide-in 0.3s ease-out both;
+}
+.evosci-entry.evosci-new::before {
+  box-shadow: 0 0 0 3px var(--accent-muted), 0 0 8px var(--accent-muted);
+  animation: evosci-dot-glow 1s ease-out forwards;
+}
+@keyframes evosci-dot-glow {
+  0% { box-shadow: 0 0 0 3px var(--accent-muted), 0 0 8px var(--accent-muted); }
+  100% { box-shadow: 0 0 0 2px var(--border-secondary); }
+}
+.evosci-entry.user {
+  align-self: flex-end;
+  background: linear-gradient(to right, var(--bg-secondary), var(--info-muted));
+  max-width: min(84%, 720px);
+  border-inline-end: 3px solid var(--info);
+}
+.evosci-entry.user::before { background: var(--info); width: 10px; height: 10px; }
+.evosci-entry.assistant {
+  max-width: min(92%, 860px);
+  border-inline-start: 3px solid var(--success);
+}
+.evosci-entry.assistant::before { background: var(--success); width: 10px; height: 10px; }
+.evosci-entry.thinking,
+.evosci-entry.system,
+.evosci-entry.error,
+.evosci-entry.tool,
+.evosci-entry.interrupt,
+.evosci-entry.ask-user,
+.evosci-entry.subagent,
+.evosci-entry.usage {
+  max-width: min(92%, 860px);
+}
+.evosci-entry.thinking {
+  background: var(--warning-bg);
+  border-inline-start: 3px solid var(--warning);
+  animation: evosci-think-pulse 2s ease-in-out infinite;
+}
+.evosci-entry.thinking.evosci-new {
+  animation: evosci-slide-in 0.3s ease-out both, evosci-think-pulse 2s ease-in-out infinite;
+}
+.evosci-entry.thinking::before { background: var(--warning); }
+@keyframes evosci-think-pulse {
+  0%, 100% { box-shadow: var(--shadow-sm); }
+  50% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--warning) 20%, transparent), var(--shadow-sm); }
+}
+.evosci-entry.error {
+  background: var(--error-bg);
+  border-inline-start: 3px solid var(--error);
+}
+.evosci-entry.error::before { background: var(--error); }
+.evosci-entry.interrupt {
+  background: var(--warning-bg);
+  border-inline-start: 3px solid var(--warning);
+}
+.evosci-entry.ask-user {
+  background: var(--success-bg);
+  border-inline-start: 3px solid var(--success);
+}
+.evosci-entry.subagent {
+  border-inline-start: 3px solid var(--accent);
+  background: var(--accent-subtle);
+}
+.evosci-entry.subagent::before { background: var(--accent); }
+.evosci-entry.tool {
+  border-inline-start: 3px solid color-mix(in srgb, var(--text-tertiary) 60%, transparent);
+}
+
+/* ── 工具分组折叠 ── */
+.evosci-tool-group {
+  border-radius: var(--radius-xl);
+  border-inline-start: 3px solid rgba(148,163,184,0.4);
+  background: var(--bg-secondary);
+  overflow: hidden;
+  animation: evosciSlideIn 0.25s ease;
+  position: relative;
+}
+/* Phase 3a: 工具分组时间线节点 */
+.evosci-tool-group::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -28px;
+  top: 18px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  border: 2px solid var(--bg-card);
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--border-secondary);
+}
+@keyframes evosciSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.evosci-tool-group-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-fast);
+}
+.evosci-tool-group-header:hover {
+  background: var(--bg-hover);
+}
+.evosci-tool-group-icon {
+  color: var(--text-tertiary);
+  display: inline-flex;
+  align-items: center;
+}
+.evosci-tool-group-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex: 1;
+}
+/* Phase 3b: 工具名称预览 */
+.evosci-tool-group-names {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-weight: 400;
+  margin-inline-start: 4px;
+}
+.evosci-chevron {
+  color: var(--text-tertiary);
+  transition: transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+.evosci-chevron.open {
+  transform: rotate(90deg);
+}
+.evosci-tool-group-body {
+  display: none;
+  border-top: 1px dashed var(--border);
+  padding: var(--space-sm) 10px;
+  gap: 6px;
+  flex-direction: column;
+}
+.evosci-tool-group-body.open {
+  display: flex;
+}
+.evosci-tool-group-body .evosci-entry {
+  border-radius: var(--radius-xl);
+  padding: 10px 14px;
+  animation: none;
+}
+/* 工具分组内的条目不显示时间线圆点 */
+.evosci-tool-group-body .evosci-entry::before {
+  display: none;
+}
+
+/* ── 条目头部/内容 ── */
+.evosci-entry-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+.evosci-entry-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--font-size-xs);
+  letter-spacing: var(--tracking-nano);
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+.evosci-entry-kind::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+.evosci-entry.user .evosci-entry-kind::before { background: var(--info); opacity: 0.8; }
+.evosci-entry.assistant .evosci-entry-kind::before { background: var(--success); opacity: 0.8; }
+.evosci-entry.thinking .evosci-entry-kind::before { background: var(--warning); opacity: 0.8; }
+.evosci-entry.error .evosci-entry-kind::before { background: var(--error); opacity: 0.8; }
+.evosci-entry.subagent .evosci-entry-kind::before { background: var(--accent); opacity: 0.8; }
+.evosci-entry-time {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+.evosci-entry-body {
+  font-size: var(--font-size-md);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-caption);
+  color: var(--text-primary);
+  word-break: break-word;
+}
+.evosci-entry-summary {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+.evosci-entry-body pre {
+  margin: 0;
+  padding: var(--space-md);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-xl);
+  overflow: auto;
+  font-size: var(--font-size-sm);
+  white-space: pre-wrap;
+  border: 1px solid var(--border-secondary);
+}
+
+/* ── 内联详情 ── */
+.evosci-inline-details {
+  border-top: 1px dashed var(--border-primary);
+  margin-top: 10px;
+  padding-top: 10px;
+}
+.evosci-inline-details summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  list-style: none;
+  transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.evosci-inline-details summary:hover {
+  color: var(--text-primary);
+}
+.evosci-inline-details summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ── 笔记行 ── */
+.evosci-note-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  max-width: min(92%, 860px);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  padding: 0 2px;
+}
+.evosci-note-row .evosci-entry-time {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+
+/* ── 流式光标 ── */
+.evosci-streaming::after {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 16px;
+  margin-inline-start: 4px;
+  vertical-align: -2px;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: evosci-caret 1s ease-in-out infinite;
+}
+@keyframes evosci-caret {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.15; }
+}
+
+/* ── 用户问答表单 ── */
+.evosci-ask-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-primary);
+}
+.evosci-ask-question {
+  padding: var(--space-md);
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+}
+
+/* ── Composer ── */
+.evosci-composer {
+  display: flex;
+  gap: 10px;
+  padding: 14px 18px 18px;
+  border-top: 1px solid var(--border-primary);
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  align-items: flex-end;
+}
+/* Phase 4a: Composer 上下文 chip 区 */
+.evosci-composer-context {
+  display: flex;
+  gap: 6px;
+  padding: 0 0 var(--space-sm);
+  flex-wrap: wrap;
+}
+.evosci-workspace-chip,
+.evosci-thread-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.evosci-workspace-chip {
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.evosci-workspace-chip:hover {
+  border-color: var(--accent);
+  color: var(--text-secondary);
+}
+.evosci-composer textarea {
+  min-height: 96px;
+  resize: vertical;
+  border-radius: var(--radius-xl);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+.evosci-composer textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-muted), 0 2px 8px color-mix(in srgb, var(--accent) 8%, transparent);
+  outline: none;
+}
+.evosci-composer .btn-primary {
+  border-radius: var(--radius-xl);
+  min-height: 42px;
+  font-weight: 600;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+.evosci-composer .btn-primary:hover:not(:disabled) {
+  box-shadow: var(--shadow-sm);
+}
+.evosci-composer .btn-primary:active:not(:disabled) {
+  box-shadow: none;
+}
+/* Phase 2e: 快捷键提示 */
+.evosci-send-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* ── 空状态 ── */
+.evosci-empty-state {
+  margin: var(--space-xl);
+  padding: var(--space-2xl) 28px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-secondary);
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  text-align: center;
+  box-shadow: inset 0 0 0 1px var(--border-secondary);
+}
+.evosci-empty-hero-icon {
+  font-size: 40px;
+  margin-bottom: var(--space-md);
+  opacity: 0.85;
+}
+/* Phase 2d: Title */
+.evosci-empty-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tile);
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.evosci-empty-copy {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-caption);
+  margin-bottom: 18px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.evosci-prompt-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.evosci-prompt-chip {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: color var(--transition-normal), background var(--transition-normal), border-color var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+.evosci-prompt-chip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+  transform: translateY(-1px);
+}
+.evosci-prompt-chip:active {
+  background: var(--bg-tertiary);
+}
+
+/* ── 案例画廊 ── */
+.evosci-cat-tabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin: var(--space-lg) 0 var(--space-md);
+  flex-wrap: wrap;
+}
+.evosci-cat-tab {
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+.evosci-cat-tab:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.evosci-cat-tab.evosci-cat-active {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border-color: var(--accent);
+}
+.evosci-case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-md);
+  text-align: start;
+  margin-bottom: var(--space-sm);
+}
+.evosci-case-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-secondary);
+  animation: evosci-case-enter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--stagger-i, 0) * 40ms);
+}
+@keyframes evosci-case-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.evosci-case-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.evosci-case-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.evosci-case-card-title {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.evosci-case-card-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--radius-lg);
+  font-size: 10px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+.evosci-case-card-desc {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-micro);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.evosci-case-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-top: auto;
+}
+
+/* ── 协作面板 ── */
+.evosci-collab-panel {
+  border-top: 1px solid var(--border-primary);
+  background: var(--accent-subtle);
+}
+.evosci-collab-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px 18px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--transition-fast);
+}
+.evosci-collab-summary:hover { color: var(--text-primary); }
+.evosci-collab-summary::-webkit-details-marker { display: none; }
+.evosci-collab-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: 0 18px var(--space-md);
+}
+.evosci-collab-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  transition: background var(--transition-fast);
+}
+.evosci-collab-item:hover {
+  background: var(--accent-muted);
+}
+
+/* ── Debug 面板 ── */
+.evosci-debug-box {
+  background: rgba(15,23,42,0.7);
+  color: #d6e4ff;
+  border-radius: var(--radius-xl);
+  padding: 14px;
+  font-size: var(--font-size-sm);
+  line-height: 1.65;
+  overflow: auto;
+  max-height: 280px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-mono);
+}
+.evosci-muted {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+}
+.evosci-debug-details {
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+}
+.evosci-advanced-details {
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  padding: 14px 16px;
+}
+.evosci-advanced-details + .evosci-advanced-details {
+  margin-top: var(--space-md);
+}
+.evosci-advanced-details summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.evosci-advanced-details summary::-webkit-details-marker {
+  display: none;
+}
+.evosci-advanced-body {
+  margin-top: 14px;
+}
+.evosci-debug-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-primary);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+.evosci-debug-details summary::-webkit-details-marker {
+  display: none;
+}
+.evosci-debug-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+.evosci-install-box {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-primary);
+}
+
+/* ── 模态框 ── */
+.evosci-modal-shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+.evosci-modal-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.evosci-modal-copy {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.evosci-modal-alert {
+  padding: var(--space-md) 14px;
+  border-radius: var(--radius-xl);
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.evosci-modal-alert.warn {
+  color: var(--warning);
+  background: var(--warning-bg);
+}
+.evosci-modal-alert.ok {
+  color: var(--success);
+  background: var(--success-bg);
+}
+
+/* ── 配置表单 ── */
+.evosci-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 860px) {
+  .evosci-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.evosci-form-grid .form-group {
+  margin-bottom: 0;
+}
+.evosci-form-grid .form-input,
+.evosci-config-meta .form-input {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+  line-height: var(--leading-micro);
+  transition: border-color var(--transition-fast);
+}
+.evosci-form-grid select.form-input {
+  appearance: auto;
+}
+.evosci-form-grid textarea.form-input {
+  min-height: 48px;
+}
+.evosci-form-grid .form-input:focus,
+.evosci-config-meta .form-input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-muted);
+}
+.evosci-inline-checks {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+.evosci-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+}
+.evosci-config-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 860px) {
+  .evosci-config-meta {
+    grid-template-columns: 1fr;
+  }
+}
+.evosci-config-meta-item {
+  padding: 10px var(--space-md);
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  min-width: 0;
+}
+.evosci-config-meta-item strong {
+  display: block;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-nano);
+  margin-bottom: 4px;
+}
+.evosci-config-meta-item span {
+  display: block;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  line-height: var(--leading-micro);
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 设置/架构 Grid ── */
+.evosci-workbench-grid,
+.evosci-architecture-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-xl);
+  align-items: start;
+}
+.evosci-settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .evosci-settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── 步骤/观测 ── */
+.evosci-step-list,
+.evosci-observed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.evosci-step,
+.evosci-observed-card {
+  border-radius: var(--radius-xl);
+  padding: var(--space-md) 14px;
+  background: var(--bg-secondary);
+}
+.evosci-step-head,
+.evosci-observed-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  align-items: center;
+  margin-bottom: 6px;
+}
+.evosci-step-index {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--success-bg);
+  color: var(--success);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.evosci-step-title,
+.evosci-observed-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.evosci-step-copy,
+.evosci-observed-copy {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ── Pill ── */
+.evosci-pill-row {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+.evosci-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  letter-spacing: var(--tracking-nano);
+}
+.evosci-pill.ok {
+  color: var(--success);
+  background: var(--success-bg);
+}
+.evosci-pill.warn {
+  color: var(--warning);
+  background: var(--warning-bg);
+}
+
+/* ── 架构节点 ── */
+.evosci-arch-flow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+.evosci-arch-node {
+  border-radius: var(--radius-xl);
+  padding: 14px;
+  background: var(--bg-secondary);
+  min-height: 140px;
+}
+.evosci-arch-node.scientists {
+  background: var(--bg-secondary);
+}
+.evosci-arch-node.human {
+  background: var(--bg-secondary);
+}
+.evosci-arch-node-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.evosci-arch-node-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.evosci-arch-node-copy {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.evosci-arch-node-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.evosci-arch-node-item {
+  padding: var(--space-sm) 10px;
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--border-primary);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+}
+.evosci-observed-meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+/* ── 人格系统 ── */
+.evosci-persona-meter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.evosci-persona-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.evosci-persona-meter-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+.evosci-persona-meter-head span:first-child {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.evosci-persona-meter-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+  position: relative;
+}
+.evosci-persona-meter-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+.evosci-persona-bridge {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1.5fr);
+  gap: var(--space-lg);
+  align-items: stretch;
+}
+.evosci-persona-node {
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  background: var(--bg-secondary);
+  min-width: 0;
+}
+.evosci-persona-node.primary {
+  background: var(--bg-secondary);
+}
+.evosci-persona-node-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.evosci-persona-node-copy {
+  font-size: var(--font-size-md);
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+.evosci-persona-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-sm);
+  border-radius: var(--radius-xl);
+  border: 1px dashed color-mix(in srgb, var(--success) 36%, transparent);
+  background: var(--success-bg);
+  color: var(--success);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: center;
+  min-height: 120px;
+}
+.evosci-persona-cluster {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+.evosci-persona-card {
+  border-radius: var(--radius-xl);
+  padding: 14px;
+  background: var(--bg-secondary);
+}
+.evosci-persona-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+.evosci-persona-card-copy {
+  font-size: var(--font-size-sm);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.evosci-persona-preview {
+  background: rgba(15,23,42,0.76);
+  color: #d6e4ff;
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  font-size: var(--font-size-sm);
+  line-height: var(--leading-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-mono);
+  max-height: 360px;
+  overflow: auto;
+}
+@media (max-width: 960px) {
+  .evosci-persona-bridge {
+    grid-template-columns: 1fr;
+  }
+  .evosci-persona-link {
+    min-height: auto;
+    padding: var(--space-md);
+  }
+}
+@media (max-width: 1100px) {
+  .evosci-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Pixel avatar ── */
+.evosci-agent-avatar {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  flex-shrink: 0;
+}
+.evosci-pixel-sprite {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0;
+}
+
+/* ── Agent badge ── */
+.evosci-agent-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px var(--space-md) 6px var(--space-sm);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--badge-color, #64748b) 6%, transparent);
+}
+.evosci-agent-badge-info {
+  min-width: 0;
+}
+.evosci-agent-badge-name {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.evosci-agent-badge-role {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* ── Swarm 面板 ── */
+.evosci-swarm-panel {
+  position: relative;
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  padding: var(--space-xl);
+  margin: 0 var(--space-lg) var(--space-lg);
+  overflow: hidden;
+}
+.evosci-swarm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+.evosci-swarm-title {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.evosci-swarm-arena {
+  position: relative;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.evosci-swarm-center {
+  position: relative;
+  z-index: 2;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--accent-muted);
+  border: 2px solid color-mix(in srgb, var(--info) 32%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  animation: evosci-swarm-pulse 2.5s ease-in-out infinite;
+}
+.evosci-swarm-center-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: var(--tracking-nano);
+}
+.evosci-swarm-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.evosci-swarm-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: evosci-swarm-enter 0.5s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay: var(--enter-delay, 0s);
+}
+.evosci-swarm-node-bubble {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--badge-color, #64748b);
+  background: color-mix(in srgb, var(--badge-color, #64748b) 10%, var(--bg-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--badge-color, #64748b) 30%, transparent);
+  animation: evosci-swarm-breathe 2.8s ease-in-out infinite;
+  animation-delay: var(--breathe-delay, 0s);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+.evosci-swarm-node-bubble:hover {
+  transform: scale(1.12);
+}
+.evosci-swarm-node-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+.evosci-swarm-node-count {
+  font-size: 9px;
+  color: var(--text-tertiary);
+}
+.evosci-swarm-connector {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 1px;
+  transform-origin: 0 0;
+  border-top: 1.5px dashed color-mix(in srgb, var(--badge-color, #64748b) 40%, transparent);
+  z-index: 0;
+  animation: evosci-swarm-dash 1.8s linear infinite;
+}
+
+@keyframes evosci-swarm-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--info) 15%, transparent); }
+  50% { box-shadow: 0 0 24px 8px color-mix(in srgb, var(--info) 10%, transparent); }
+}
+@keyframes evosci-swarm-enter {
+  from { opacity: 0; transform: scale(0) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes evosci-swarm-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--badge-color, #64748b) 25%, transparent); }
+  50% { box-shadow: 0 0 12px 4px color-mix(in srgb, var(--badge-color, #64748b) 18%, transparent); }
+}
+@keyframes evosci-swarm-dash {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -12; }
+}
+@keyframes evosci-swarm-orbit {
+  0%, 100% { transform: translate(var(--x), var(--y)); }
+  25% { transform: translate(calc(var(--x) + 3px), calc(var(--y) - 2px)); }
+  50% { transform: translate(calc(var(--x) - 2px), calc(var(--y) + 3px)); }
+  75% { transform: translate(calc(var(--x) + 2px), calc(var(--y) + 1px)); }
+}
+
+/* ── Swarm 粒子 ── */
+.evosci-swarm-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--info) 25%, transparent);
+  animation: evosci-particle-float var(--dur, 6s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes evosci-particle-float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  25% { transform: translate(var(--dx, 20px), var(--dy, -15px)); opacity: 0.6; }
+  50% { transform: translate(var(--dx2, -10px), var(--dy2, 25px)); opacity: 0.2; }
+  75% { transform: translate(var(--dx3, 15px), var(--dy3, 10px)); opacity: 0.5; }
+}
+
+/* ── 说明卡片 ── */
+.evosci-explanation-card {
+  margin: var(--space-sm) 0 0;
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  font-size: var(--font-size-sm);
+}
+.evosci-explanation-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-sm) 14px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  user-select: none;
+  list-style: none;
+}
+.evosci-explanation-summary::-webkit-details-marker { display: none; }
+.evosci-explanation-summary .evosci-chevron {
+  font-size: var(--font-size-sm);
+}
+.evosci-explanation-body {
+  padding: 0 14px 14px;
+  display: grid;
+  gap: var(--space-md);
+}
+.evosci-explanation-section {
+  padding: 10px var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+}
+.evosci-explanation-heading {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.evosci-explanation-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.evosci-explanation-text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ── 导出面板 ── */
+.evosci-export-panel {
+  border-radius: var(--radius-xl);
+  background: var(--info-muted);
+  padding: var(--space-lg);
+  margin: 0 var(--space-lg) var(--space-lg);
+}
+.evosci-export-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.evosci-export-copy {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.evosci-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+.evosci-export-path-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding: 6px 10px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+}
+.evosci-export-path-label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.evosci-export-warn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-top: 10px;
+}
+
+/* Phase 5: 时间线智能折叠 */
+.evosci-timeline-collapsed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--border-secondary);
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+}
+.evosci-timeline-collapsed::before {
+  /* 继承时间线节点样式 */
+  content: '';
+  position: absolute;
+  inset-inline-start: -28px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-secondary);
+  border: 2px solid var(--bg-card);
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--border-secondary);
+}
+.evosci-timeline-collapsed:hover {
+  color: var(--text-secondary);
+  border-color: var(--accent);
+}
+
+/* ── 减弱动画 ── */
+@media (prefers-reduced-motion: reduce) {
+  .evosci-swarm-center,
+  .evosci-swarm-node-bubble,
+  .evosci-swarm-connector,
+  .evosci-swarm-particle,
+  .evosci-swarm-node,
+  .evosci-chat-shell.running::before {
+    animation: none !important;
+  }
+}

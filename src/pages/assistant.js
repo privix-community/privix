@@ -19,6 +19,7 @@ import {
 } from '../lib/model-presets.js'
 import { bindCompositionState, createCompositionState, shouldSubmitOnEnter, bindCopyButtons } from '../lib/input-helpers.js'
 import { t } from '../lib/i18n.js'
+import { checkAndResolveSensitive } from '../lib/sensitive-detect.js'
 import { buildAgentDebugPrompt } from '../lib/agent-config.js'
 import { migrateAssistantStorage } from '../lib/assistant-storage.js'
 import {
@@ -3773,19 +3774,28 @@ function updateModelBadge() {
 }
 
 // ── 发送消息 ──
-function sendMessage(text) {
-  const hasContent = text.trim() || _pendingImages.length > 0
+async function sendMessage(text) {
+  const trimmed = text.trim()
+  const hasContent = trimmed || _pendingImages.length > 0
   if (!hasContent) return
+
+  let resolvedText = text
+  if (trimmed) {
+    const resolved = await checkAndResolveSensitive(trimmed)
+    if (resolved.action === 'cancel') return
+    resolvedText = resolved.text
+  }
+
   // 流式中 → 排队（图片不排队，提示用户）
   if (_isStreaming) {
     if (_pendingImages.length > 0) {
       toast('AI 正在回复中，图片消息请等待完成后再发送', 'info')
       return
     }
-    enqueueMessage(text.trim())
+    enqueueMessage(resolvedText.trim())
     return
   }
-  sendMessageDirect(text)
+  sendMessageDirect(resolvedText)
 }
 
 // 直接发送（内部使用，不经过队列）

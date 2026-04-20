@@ -13,6 +13,7 @@ import { isFeatureAvailable } from '../lib/feature-gates.js'
 import { t } from '../lib/i18n.js'
 import { listEngines, getActiveEngine, getActiveEngineId, getEngine, switchEngine, onEngineChange, ENGINE_IDS } from '../lib/engine-manager.js'
 import { getRouteRequiredEngine } from '../lib/engine-route-policy.js'
+import { renderWorkspaceSwitcher, bindWorkspaceSwitcher } from './workspace-switcher.js'
 
 function getClawOverviewItems() {
   return [
@@ -97,6 +98,7 @@ ICONS['hermes'] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 ICONS['openclaw'] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
 ICONS['magic-wand'] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 4V2M15 16v-2M8 9H6M22 9h-2M17.8 11.8L19 13M15 9h0M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5"/></svg>'
 ICONS['industry'] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7 4V9l7 4v8M9 9V5"/></svg>'
+ICONS['research'] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>'
 
 let _delegated = false
 let _hasMultipleInstances = false
@@ -175,6 +177,8 @@ function getNavPillars(engineMode = ENGINE_IDS.OPENCLAW) {
     engineFolder,
     { id: 'claw-assistant', label: t('sidebar.assistant') || '钳子医生', icon: 'assistant',
       route: '/assistant', collapsible: false },
+    { id: 'research', label: t('sidebar.pillar_research') || 'ProspectResearch', icon: 'research',
+      route: '/research', collapsible: false },
     { id: 'quick-setup', label: t('sidebar.pillar_quick_setup') || '一键配置', icon: 'magic-wand',
       route: quickSetupRoute, collapsible: false },
     { id: 'system', label: t('sidebar.pillar_system') || '系统设置', icon: 'settings',
@@ -323,6 +327,7 @@ export function renderSidebar(el) {
       </div>
       <button class="sidebar-close-btn" id="btn-sidebar-close" title="关闭菜单">&times;</button>
     </div>
+    ${renderWorkspaceSwitcher()}
     ${showSwitcher ? `<div class="instance-switcher" id="instance-switcher">
       <button class="instance-current" id="btn-instance-toggle">
         <span class="instance-dot ${isLocal ? 'local' : 'remote'}"></span>
@@ -505,6 +510,9 @@ export function renderSidebar(el) {
   syncSidebarState(currentState)
 
   // 社区版无行业模块
+
+  // Workspace 切换器:每次 render 都要重新绑(因为按钮元素是新的)
+  bindWorkspaceSwitcher(el)
 
   // 首次渲染时异步检测多实例
   if (!_delegated) _checkMultiInstances(el)

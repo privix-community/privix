@@ -39,6 +39,7 @@ const MODULE_ROUTES = {
     '/settings',
     '/setup',
     '/quick-setup',
+    '/research',
     '/skills',
     '/usage',
     '/h/setup',

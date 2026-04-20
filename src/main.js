@@ -1,6 +1,10 @@
 /**
  * Privix 入口
  */
+// Workspace 隔离 monkey-patch 必须第一个 import,覆写 localStorage 后续所有读写才会自动加命名空间
+import { installWorkspaceStorage } from './lib/workspace-storage.js'
+installWorkspaceStorage()
+
 import { getHashPath, registerRoute, initRouter, navigate, setDefaultRoute, setRouteGuard, reloadCurrentRoute } from './router.js'
 import { renderSidebar, openMobileSidebar } from './components/sidebar.js'
 import { initTheme, initScale, initUserCss } from './lib/theme.js'

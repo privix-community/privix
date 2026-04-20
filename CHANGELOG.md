@@ -4,6 +4,26 @@
 
 `-ce.N` 后缀表示 Community Edition 的迭代号。
 
+## [2.1.0-ce.1] - 2026-04-20
+
+社区版差异化里程碑:引入 ProspectResearch 研究工作台与三项隐私功能,明确"**隐私优先的 AI 研究工作台**"定位。
+
+### 新增
+
+- **零遥测守卫 (`npm run check:telemetry`)**:扫描 `src/` / `src-tauri/src/` / `scripts/` 全部硬编码 URL,与 `scripts/telemetry-allowlist.txt`(98 条允许域名)比对,未登记即 fail。接入 pre-commit hook,CI 强制。README 新增"零遥测承诺"章节明确不做任何使用分析、错误上报、心跳、自动更新。
+- **敏感信息检测脱敏 (`src/lib/sensitive-detect.js`)**:发送消息前自动扫描 Anthropic/OpenAI/Google API Key、JWT、PEM 私钥、中国身份证(GB 11643 checksum)、中国手机号、银行卡(Luhn 校验)。命中弹窗提供 [掩码发送 / 移除包含行 / 原文发送(需二次确认) / 取消] 四种动作。设置页"敏感信息检测"区块可按类型勾选。12 个单测覆盖检测 + 校验 + 索引处理。
+- **ProspectResearch 研究工作台(`/research`)**:从商业版 EvoScientist 移植通用多轮研究 / 综述 / 引用追溯 flow,**剥离 PE/VC 行业 KB 依赖**(`task-case-templates.js`、行业 case 画廊、`pevc-kb` 相关代码)。ported 5 个 evoscientist-* lib + 页面 + CSS + doc-export + 401 个 i18n key(11 locales)。侧边栏新增主线图标。
+- **Workspace 工作区隔离**:每个 workspace 拥有独立 localStorage 命名空间 `pcws.<id>.*`,默认工作区用裸键兼容现有用户数据。Sidebar 顶部新增 switcher 下拉菜单,支持切换 / 新建 / 重命名 / 删除(含数据清理)。13 个单测覆盖 CRUD + 跨 ws 隔离 + 全局键共享。
+
+### 变更
+
+- 版本号跃升到 `2.1.0-ce.1`(minor bump,表示功能新增)
+- `package.json` 新增 `check:telemetry` script,并接入 `install-git-hooks.js` 生成的 pre-commit hook
+- `src/main.js` 顶部最早 import `workspace-storage.js` 并 `installWorkspaceStorage()`,确保后续模块所有 localStorage 访问经过命名空间
+- `src/components/sidebar.js` `getNavPillars()` 插入 ProspectResearch 主线;`ICONS` 新增 `research` compass 图标
+- `UPSTREAM.md` 新增 "CE ↔ 商业版 ProspectResearch 同步表",指导以后商业版改动如何选择性 port
+- ESLint 全局添加 `btoa` / `atob`(DOM Base64 API)
+
 ## [2.0.0-ce.2] - 2026-04-20
 
 ### Cleanup (audit D)

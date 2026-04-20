@@ -15,13 +15,16 @@ const HOOK_DIR = join(ROOT, '.git/hooks')
 const HOOK_PATH = join(HOOK_DIR, 'pre-commit')
 
 const HOOK = `#!/bin/sh
-# Privix pre-commit: i18n key 校验
+# Privix Community pre-commit: i18n key 校验 + 零遥测守卫
 # 由 scripts/install-git-hooks.js 安装
 # 如需跳过(不推荐): git commit --no-verify
 set -e
 
 echo "[pre-commit] running i18n:check:strict (all 11 locales)..."
 npm run -s i18n:check:strict
+
+echo "[pre-commit] running check:telemetry (zero-telemetry guardian)..."
+npm run -s check:telemetry
 `
 
 if (!existsSync(join(ROOT, '.git'))) {
@@ -34,7 +37,7 @@ writeFileSync(HOOK_PATH, HOOK, 'utf8')
 chmodSync(HOOK_PATH, 0o755)
 
 console.log('✓ pre-commit hook 已安装到 .git/hooks/pre-commit')
-console.log('  每次 commit 前会自动跑 npm run i18n:check')
+console.log('  每次 commit 前会自动跑 i18n:check:strict + check:telemetry')
 console.log('  如需跳过(不推荐):git commit --no-verify')
 
 // 验证可执行

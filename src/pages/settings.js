@@ -7,6 +7,7 @@ import { toast } from '../components/toast.js'
 import { BRAND_NAME } from '../lib/brand.js'
 import { getThemeOptions, getThemePreset, onThemeChange, setThemePreset, isUserCssEnabled, setUserCssEnabled, reloadUserCss } from '../lib/theme.js'
 import { t, getLocale, setLocale, SUPPORTED_LOCALES } from '../lib/i18n.js'
+import { loadSensitiveDetectConfig, saveSensitiveDetectConfig, listSensitiveTypes } from '../lib/sensitive-detect.js'
 
 const isTauri = typeof window !== 'undefined' && !!window.__TAURI_INTERNALS__
 let _detachThemeListener = null
@@ -56,6 +57,11 @@ export async function render() {
       <div id="user-css-bar"><div class="stat-card loading-placeholder" style="height:120px"></div></div>
     </div>
 
+    <div class="config-section" id="sensitive-section">
+      <div class="config-section-title">${t('sensitive.settings_section')}</div>
+      <div id="sensitive-bar"><div class="stat-card loading-placeholder" style="height:120px"></div></div>
+    </div>
+
     <div class="config-section" id="proxy-section">
       <div class="config-section-title">网络代理</div>
       <div id="proxy-bar"><div class="stat-card loading-placeholder" style="height:48px"></div></div>
@@ -84,8 +90,44 @@ export async function render() {
 
   bindEvents(page)
   loadAll(page)
+  renderSensitiveBar(page.querySelector('#sensitive-bar'))
   _detachThemeListener = onThemeChange(() => renderThemeBar(page.querySelector('#theme-bar')))
   return page
+}
+
+function renderSensitiveBar(bar) {
+  if (!bar) return
+  const cfg = loadSensitiveDetectConfig()
+  const types = listSensitiveTypes()
+  bar.innerHTML = `
+    <div class="stat-card" style="padding:16px">
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5">
+        ${escapeHtml(t('sensitive.settings_intro'))}
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:14px;cursor:pointer">
+        <input type="checkbox" id="sensitive-enabled" ${cfg.enabled ? 'checked' : ''}>
+        <span style="font-size:13px">${escapeHtml(t('sensitive.settings_enable'))}</span>
+      </label>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">${escapeHtml(t('sensitive.settings_types_label'))}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;margin-bottom:14px">
+        ${types.map(type => `
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+            <input type="checkbox" data-sensitive-type="${escapeHtml(type)}" ${cfg.types.includes(type) ? 'checked' : ''}>
+            <span>${escapeHtml(t(`sensitive.type_${type}`))}</span>
+          </label>
+        `).join('')}
+      </div>
+      <button class="btn btn-pill-filled btn-sm" id="sensitive-save">${escapeHtml(t('sensitive.settings_save'))}</button>
+    </div>
+  `
+  bar.querySelector('#sensitive-save').onclick = () => {
+    const enabled = bar.querySelector('#sensitive-enabled').checked
+    const selectedTypes = Array.from(bar.querySelectorAll('[data-sensitive-type]'))
+      .filter(cb => cb.checked)
+      .map(cb => cb.dataset.sensitiveType)
+    saveSensitiveDetectConfig({ enabled, types: selectedTypes })
+    toast(`✓ ${t('sensitive.settings_save')}`, 'success')
+  }
 }
 
 export function cleanup() {

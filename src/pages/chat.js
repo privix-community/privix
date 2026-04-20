@@ -27,6 +27,7 @@ import {
 } from '../lib/chat-message-view.js'
 import { bindCompositionState, createCompositionState, shouldSubmitOnEnter, bindCopyButtons } from '../lib/input-helpers.js'
 import { t } from '../lib/i18n.js'
+import { checkAndResolveSensitive } from '../lib/sensitive-detect.js'
 // Storage key migration: read old key if new key is absent
 function migrateLocalStorage(newKey, oldKey) {
   if (localStorage.getItem(newKey) === null && localStorage.getItem(oldKey) !== null) {
@@ -1121,9 +1122,17 @@ function toggleCmdPanel() {
 
 // ── 消息发送 ──
 
-function sendMessage() {
-  const text = _textarea.value.trim()
-  if (!text && !_attachments.length) return
+async function sendMessage() {
+  const rawText = _textarea.value.trim()
+  if (!rawText && !_attachments.length) return
+
+  let text = rawText
+  if (rawText) {
+    const resolved = await checkAndResolveSensitive(rawText)
+    if (resolved.action === 'cancel') return
+    text = resolved.text
+  }
+
   hideCmdPanel()
   _textarea.value = ''
   _textarea.style.height = 'auto'

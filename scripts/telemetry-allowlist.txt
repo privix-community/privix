@@ -1,0 +1,126 @@
+# Privix Community — 零遥测 Allowlist
+#
+# 每行一个 host(完整域名),# 开头为注释,通配符 *.example.com 匹配任意子域。
+# 由 scripts/check-no-telemetry.js 读取,未登记的 host 会导致 commit/CI 失败。
+#
+# 准入规则(reviewer 必查):
+#   允许:模型提供商 API 默认值(用户可覆盖) · 文档/帮助/OSS 仓库链接 ·
+#        频道/办公集成 API(用户主动授权) · 开发工具安装脚本引用
+#   严禁:遥测 · 使用分析 · 错误/崩溃上报 · 用户追踪 · 在线许可验证 ·
+#        自动更新 · 心跳 · 广告 · A/B 实验
+
+# === 本地开发 / 测试占位 ===
+localhost
+127.0.0.1
+0.0.0.0
+tauri.localhost
+old.example
+
+# === Web 标准 ===
+www.w3.org
+
+# === Privix Community 官方仓库 + 上游 ===
+github.com
+api.github.com
+raw.githubusercontent.com
+openclaw.ai
+www.openclaw.ai
+clawhub.openclaw.ai
+openclawcn.com
+
+# === 模型提供商 API 默认端点(用户可配置覆盖) ===
+api.anthropic.com
+api.openai.com
+api.deepseek.com
+api.moonshot.ai
+api.moonshot.cn
+api.kimi.com
+api.minimax.chat
+api.minimax.io
+api.minimaxi.com
+api.stepfun.com
+api.x.ai
+api.poe.com
+api.lingyiwanwu.com
+api.hunyuan.cloud.tencent.com
+api-inference.modelscope.cn
+ark.cn-beijing.volces.com
+dashscope.aliyuncs.com
+dashscope-intl.aliyuncs.com
+qianfan.baidubce.com
+qianfan.cloud.baidu.com
+integrate.api.nvidia.com
+generativelanguage.googleapis.com
+bedrock-runtime.us-east-1.amazonaws.com
+aws.amazon.com
+router.shengsuanyun.com
+openrouter.ai
+gpt.qt.cool
+iflow.cn
+lightmake.site
+api.siliconflow.cn
+open.bigmodel.cn
+
+# === 搜索 / 抓取提供商(Agent 工具) ===
+duckduckgo.com
+html.duckduckgo.com
+r.jina.ai
+
+# === 文档 / 帮助站 ===
+docs.anthropic.com
+docs.claude.com
+docs.astral.sh
+docs.factory.ai
+developers.openai.com
+modelscope.cn
+platform.lingyiwanwu.com
+platform.minimaxi.com
+platform.moonshot.ai
+platform.moonshot.cn
+platform.stepfun.com
+poe.com
+claude.com
+block.github.io
+hermes-agent.nousresearch.com
+qoder.com
+opencode.ai
+lmstudio.ai
+www.factory.ai
+www.kimi.com
+www.npmjs.com
+
+# === 频道 / 办公集成(用户主动授权) ===
+api.telegram.org
+t.me
+api.dingtalk.com
+open.dingtalk.com
+open-dev.dingtalk.com
+bots.qq.com
+q.qq.com
+discord.com
+open.feishu.cn
+www.feishu.cn
+open.larkoffice.com
+open.larksuite.com
+copilot.tencent.com
+skillhub.tencent.com
+skillhub-1388575217.cos.ap-guangzhou.myqcloud.com
+
+# === 开发工具 / 安装脚本引用(docs) ===
+nodejs.org
+git-scm.com
+registry.npmjs.org
+registry.npmmirror.com
+repo.huaweicloud.com
+deb.nodesource.com
+rpm.nodesource.com
+pandoc.org
+
+# === 用户可跳转的云厂商活动 / 介绍页 ===
+cloud.tencent.com
+cloud.siliconflow.cn
+volcengine.com
+www.alibabacloud.com
+www.aliyun.com
+www.bigmodel.cn
+www.shengsuanyun.com
