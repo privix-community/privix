@@ -1,6 +1,6 @@
 [package]
 name = "privix-community"
-version = "2.1.0-ce.1"
+version = "2.2.0-ce.1"
 edition = "2021"
 description = "Privix Community - 开源 AI Agent 桌面工作台(OpenClaw + Hermes)"
 authors = ["Privix Community Contributors"]

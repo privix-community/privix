@@ -4027,7 +4027,8 @@
       "memoryLoading": "加载中...",
       "memoryEmpty": "暂无内容",
       "memoryPlaceholder": "使用 Markdown 格式编写...",
-      "memoryUnsaved": "有未保存的更改,确定离开?"
+      "memoryUnsaved": "有未保存的更改,确定离开?",
+      "detect_error": "خطأ في الكشف"
     },
     "quick_setup": {
       "step1_title": "OpenClaw 状态",
@@ -5296,5 +5297,11 @@
   "_meta": {
     "status": "in-progress",
     "note": "Placeholder copied from en.json. Native translation planned for v1.2.6."
+  },
+  "theme": {
+    "light_label": "الوضع الفاتح",
+    "light_description": "واجهة فاتحة مشرقة ونظيفة، مناسبة للاستخدام النهاري.",
+    "dark_label": "الوضع الداكن",
+    "dark_description": "واجهة داكنة غامرة، مناسبة للاستخدام الليلي والعمل المركز."
   }
 }

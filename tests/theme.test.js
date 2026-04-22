@@ -99,7 +99,8 @@ test('theme options expose the agreed preset set and order', () => {
     getThemeOptions().map(option => option.id),
     ['light', 'dark'],
   )
-  assert.equal(getThemeOption('dark').label, '深色模式')
+  // label 走 i18n;测试不初始化 i18n,直接核对 labelKey 契约
+  assert.equal(getThemeOption('dark').labelKey, 'theme.dark_label')
 })
 
 test('initTheme migrates legacy light preference to light preset', () => {

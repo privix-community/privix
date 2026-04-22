@@ -4,6 +4,26 @@
 
 `-ce.N` 后缀表示 Community Edition 的迭代号。
 
+## [2.2.0-ce.1] - 2026-04-22
+
+东南亚语种支持。新增印尼语 / 泰语 / 越南语 / 马来语 4 个 locale,并修复两处 pre-existing 的中文硬编码漏翻。
+
+### 新增
+
+- **4 个东南亚 locale**:`id`(Bahasa Indonesia)、`th`(ไทย)、`vi`(Tiếng Việt)、`ms`(Bahasa Melayu baku)。每 locale 覆盖全部 5114 个 i18n key,保留品牌专名(Privix / OpenClaw / Claw Doctor / Hermes / Tauri 等)与 `{placeholder}` / HTML 标签不变。`src/lib/i18n.js` 的 `SUPPORTED_LOCALES` 与 `_loaders` 同步扩展,侧边栏语言下拉自动出现 4 个新选项。`RTL_LOCALES` 不动(均为 LTR)。
+- **新增 5 个 i18n key × 15 locale**:`theme.light_label` / `theme.light_description` / `theme.dark_label` / `theme.dark_description` / `pages.engine.detect_error`。
+
+### 修复
+
+- **主题标签 i18n 化**(`src/lib/theme.js`):`THEME_OPTIONS` 的 `label` / `description` 由硬编码中文改为走 `t(labelKey)` / `t(descriptionKey)`。受影响 UI:侧边栏底部主题切换、系统设置主题选择。之前 15 个 locale 下侧栏均显示"浅色模式/深色模式"中文,现正确本地化。
+- **Hermes 安装页检测错误前缀 i18n 化**(`src/engines/hermes/pages/setup.js:422`):`检测错误: ${e}` → `${t('pages.engine.detect_error')}: ${e}`。仅在 web 模式检测失败时可见。
+
+### 变更
+
+- **`scripts/check-i18n-keys.js`**:`ALL_LOCALES` 硬编码数组改为从 `src/i18n/` 目录 readdir 推导,新增 locale 只需 `i18n.js` 一处登记(之前需同步改 3 处)。
+- **`src/lib/theme.js`** 引入模块级缓存 `_resolvedByPreset`,订阅 `i18n.onLocaleChange` 做失效;`getThemeOptions` / `getThemeOption` 热路径避免每次重算 `t()` 与对象 spread。
+- **`tests/theme.test.js`**:theme 改为 i18n 驱动后,旧 `assert ... label === '深色模式'` 更新为 `labelKey === 'theme.dark_label'` 契约检查,不依赖 i18n 运行时初始化。
+
 ## [2.1.0-ce.1] - 2026-04-20
 
 社区版差异化里程碑:引入 ProspectResearch 研究工作台与三项隐私功能,明确"**隐私优先的 AI 研究工作台**"定位。

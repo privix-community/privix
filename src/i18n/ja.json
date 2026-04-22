@@ -4027,7 +4027,8 @@
       "memoryLoading": "加载中...",
       "memoryEmpty": "暂无内容",
       "memoryPlaceholder": "使用 Markdown 格式编写...",
-      "memoryUnsaved": "有未保存的更改,确定离开?"
+      "memoryUnsaved": "有未保存的更改,确定离开?",
+      "detect_error": "検出エラー"
     },
     "quick_setup": {
       "step1_title": "OpenClaw 状态",
@@ -5292,5 +5293,11 @@
       "hermes_unavailable": "Hermes Agent 不可用: {error}",
       "empty_reply": "LLM 回复为空"
     }
+  },
+  "theme": {
+    "light_label": "ライトモード",
+    "light_description": "明るく清潔なライトインターフェース。日中の使用に適しています。",
+    "dark_label": "ダークモード",
+    "dark_description": "没入感のあるダークインターフェース。夜間や集中作業に適しています。"
   }
 }

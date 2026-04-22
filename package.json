@@ -1,6 +1,6 @@
 {
   "name": "privix-community",
-  "version": "2.1.0-ce.1",
+  "version": "2.2.0-ce.1",
   "private": true,
   "description": "Privix Community - 开源 AI Agent 桌面工作台, 基于 Tauri v2 的跨平台客户端, 集成 OpenClaw + Hermes 双引擎",
   "type": "module",

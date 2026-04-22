@@ -1,6 +1,8 @@
 /**
  * 主题管理 — Apple 风格双模式（light / dark）
  */
+import { t, onLocaleChange } from './i18n.js'
+
 const THEME_PRESET_KEY = 'privix-community-theme-preset'
 const LEGACY_THEME_KEY = 'privix-community-theme'
 const OLD_THEME_KEY = 'clawpanel-theme'
@@ -20,29 +22,46 @@ const LEGACY_THEME_PRESET_MAP = {
 const THEME_OPTIONS = Object.freeze([
   {
     id: 'light',
-    label: '浅色模式',
-    description: '明亮、干净的浅色界面，适合日间使用。',
+    labelKey: 'theme.light_label',
+    descriptionKey: 'theme.light_description',
     tone: 'light',
     swatches: ['#f5f5f7', '#5A72EE', '#1d1d1f'],
   },
   {
     id: 'dark',
-    label: '深色模式',
-    description: '沉浸式深色界面，适合夜间与高专注场景。',
+    labelKey: 'theme.dark_label',
+    descriptionKey: 'theme.dark_description',
     tone: 'dark',
     swatches: ['#000000', '#5A72EE', '#C7D9FF'],
   },
 ])
 
-const THEME_OPTION_MAP = new Map(THEME_OPTIONS.map(option => [option.id, option]))
+const THEME_IDS = new Set(THEME_OPTIONS.map(option => option.id))
+
+// 解析后的选项按 locale 缓存(复用 sidebar/settings 高频读取),locale 切换时失效
+let _resolvedByPreset = null
+
+function resolvedByPreset() {
+  if (!_resolvedByPreset) {
+    _resolvedByPreset = new Map(
+      THEME_OPTIONS.map(option => [
+        option.id,
+        { ...option, label: t(option.labelKey), description: t(option.descriptionKey) },
+      ]),
+    )
+  }
+  return _resolvedByPreset
+}
+
+onLocaleChange(() => { _resolvedByPreset = null })
 
 export function getThemeOptions() {
-  return THEME_OPTIONS.map(option => ({ ...option, swatches: [...option.swatches] }))
+  return [...resolvedByPreset().values()]
 }
 
 export function getThemeOption(themePreset = DEFAULT_THEME_PRESET) {
-  const normalized = normalizeThemePreset(themePreset)
-  return normalized ? THEME_OPTION_MAP.get(normalized) : THEME_OPTION_MAP.get(DEFAULT_THEME_PRESET)
+  const map = resolvedByPreset()
+  return map.get(normalizeThemePreset(themePreset)) || map.get(DEFAULT_THEME_PRESET)
 }
 
 export function getActiveThemeOption() {
@@ -145,7 +164,7 @@ function emitThemeChange(option) {
 }
 
 function normalizeThemePreset(value) {
-  return THEME_OPTION_MAP.has(value) ? value : null
+  return THEME_IDS.has(value) ? value : null
 }
 
 function normalizeLegacyTheme(value) {

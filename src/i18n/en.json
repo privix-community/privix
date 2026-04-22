@@ -3714,7 +3714,8 @@
       "memoryLoading": "Loading...",
       "memoryEmpty": "No content",
       "memoryPlaceholder": "Write in Markdown format...",
-      "memoryUnsaved": "Unsaved changes. Leave anyway?"
+      "memoryUnsaved": "Unsaved changes. Leave anyway?",
+      "detect_error": "Detection error"
     },
     "quick_setup": {
       "step1_title": "OpenClaw Status",
@@ -5270,5 +5271,11 @@
       "hermes_unavailable": "Hermes Agent unavailable: {error}",
       "empty_reply": "Empty LLM reply"
     }
+  },
+  "theme": {
+    "light_label": "Light mode",
+    "light_description": "Bright, clean light interface, suitable for daytime use.",
+    "dark_label": "Dark mode",
+    "dark_description": "Immersive dark interface, suitable for night-time and focused work."
   }
 }

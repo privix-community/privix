@@ -21,6 +21,10 @@ export const SUPPORTED_LOCALES = [
   { code: 'pt-BR', label: 'Português (Brasil)', nativeLabel: 'Português (Brasil)' },
   { code: 'ar',    label: 'العربية',  nativeLabel: 'العربية' },
   { code: 'ru',    label: 'Русский',  nativeLabel: 'Русский' },
+  { code: 'id',    label: 'Bahasa Indonesia', nativeLabel: 'Bahasa Indonesia' },
+  { code: 'th',    label: 'ไทย',       nativeLabel: 'ไทย' },
+  { code: 'vi',    label: 'Tiếng Việt', nativeLabel: 'Tiếng Việt' },
+  { code: 'ms',    label: 'Bahasa Melayu', nativeLabel: 'Bahasa Melayu' },
 ]
 
 const RTL_LOCALES = new Set(['ar'])
@@ -47,6 +51,10 @@ const _loaders = {
   'pt-BR': () => import('../i18n/pt-BR.json'),
   'ar':    () => import('../i18n/ar.json'),
   'ru':    () => import('../i18n/ru.json'),
+  'id':    () => import('../i18n/id.json'),
+  'th':    () => import('../i18n/th.json'),
+  'vi':    () => import('../i18n/vi.json'),
+  'ms':    () => import('../i18n/ms.json'),
 }
 
 // ── 初始化 ──────────────────────────────────────

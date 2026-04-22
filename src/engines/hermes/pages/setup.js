@@ -419,7 +419,7 @@ export function render() {
       }
       draw()
     } catch (e) {
-      logs.push(`检测错误: ${e}`)
+      logs.push(`${t('pages.engine.detect_error')}: ${e}`)
       phase = 'install'
       draw()
     }

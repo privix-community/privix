@@ -4005,7 +4005,8 @@
       "memoryLoading": "加载中...",
       "memoryEmpty": "暂无内容",
       "memoryPlaceholder": "使用 Markdown 格式编写...",
-      "memoryUnsaved": "有未保存的更改,确定离开?"
+      "memoryUnsaved": "有未保存的更改,确定离开?",
+      "detect_error": "检测错误"
     },
     "quick_setup": {
       "step1_title": "OpenClaw 状态",
@@ -5270,5 +5271,11 @@
       "hermes_unavailable": "Hermes Agent 不可用: {error}",
       "empty_reply": "LLM 回复为空"
     }
+  },
+  "theme": {
+    "light_label": "浅色模式",
+    "light_description": "明亮、干净的浅色界面，适合日间使用。",
+    "dark_label": "深色模式",
+    "dark_description": "沉浸式深色界面，适合夜间与高专注场景。"
   }
 }

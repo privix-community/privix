@@ -23,7 +23,14 @@ import { join, resolve } from 'node:path'
 const ROOT = resolve(import.meta.dirname, '..')
 const I18N_DIR = join(ROOT, 'src/i18n')
 const PRIMARY_LOCALE = 'zh-CN'
-const ALL_LOCALES = ['zh-CN', 'en', 'zh-TW', 'ja', 'ko', 'es', 'fr', 'de', 'pt-BR', 'ar', 'ru']
+// locale 列表从 src/i18n 目录扫出,新增 locale 自动覆盖,避免和 i18n.js 的 SUPPORTED_LOCALES 失同步
+const ALL_LOCALES = [
+  PRIMARY_LOCALE,
+  ...readdirSync(I18N_DIR)
+    .filter(f => f.endsWith('.json') && f !== `${PRIMARY_LOCALE}.json`)
+    .map(f => f.slice(0, -5))
+    .sort(),
+]
 
 // 命令行参数
 const args = process.argv.slice(2)

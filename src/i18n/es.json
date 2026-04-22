@@ -4005,7 +4005,8 @@
       "memoryLoading": "加载中...",
       "memoryEmpty": "暂无内容",
       "memoryPlaceholder": "使用 Markdown 格式编写...",
-      "memoryUnsaved": "有未保存的更改,确定离开?"
+      "memoryUnsaved": "有未保存的更改,确定离开?",
+      "detect_error": "Error de detección"
     },
     "quick_setup": {
       "step1_title": "OpenClaw 状态",
@@ -5274,5 +5275,11 @@
   "_meta": {
     "status": "in-progress",
     "note": "Partial translation (1112/2362 keys). Full translation planned for v1.2.6."
+  },
+  "theme": {
+    "light_label": "Modo claro",
+    "light_description": "Interfaz clara, brillante y limpia, adecuada para el uso diurno.",
+    "dark_label": "Modo oscuro",
+    "dark_description": "Interfaz oscura inmersiva, ideal para la noche y el trabajo concentrado."
   }
 }
